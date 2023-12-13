@@ -1,0 +1,79 @@
+<p>
+<h2>
+    <?php
+
+    use App\config\Helpers;
+
+    use function App\d;
+
+    echo $title;
+    ?>
+</h2>
+</p>
+
+<a href="<?php echo '/' . $_COOKIE['back']; ?>" class="btn btn-primary">Назад</a>
+
+<!-- Вывод комментариев -->
+<div class="container" style="height: 768px;">
+    <div class="row my-3 mx-auto">
+
+        <?php if (empty($postslist)) : ?>
+            <p>Список комментариев пуст</p>
+        <?php else : ?>
+
+            <table class="table table-sm table-responsive">
+                <tr>
+                    <th>Автор</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                <?php if (Helpers::existsSession('account')) : ?>
+                    <th>Удалить</th>
+                <?php endif; ?>
+                </tr>
+                <?php foreach ($postslist as $comment) : ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($comment['author'], ENT_QUOTES); ?></td>
+                        <td><?php echo htmlspecialchars($comment['post'], ENT_QUOTES); ?></td>
+                        <td><?php echo htmlspecialchars($comment['date'], ENT_QUOTES); ?></td>
+                    <?php if (Helpers::existsSession('account') and $_SESSION['account']['login'] == $comment['author']) : ?>
+                        <td><a href="<?php echo '/delete/' . $comment['id']; ?>" class="btn btn-sm btn-danger">DEL</a></td>
+                    <?php endif; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+
+        <?php endif; ?>
+    </div>
+
+    <!-- добавление комментария -->
+    <div class="container rounded bg-success">
+        <div class="row">
+            <div class="col-4 mx-auto my-1">
+                <img src="/public/uploads/<?php echo $_COOKIE['id_img'] . '.jpg'; ?>" class="rounded img-thumbnail float-start" alt="Файл не найден">
+            </div>
+
+            <?php if (Helpers::existsSession('account') ) : ?>
+            <div class="container my-auto col-8">
+                <div class="card">
+                    <div class="card-header">Добавить комментарий для изображения <?php echo htmlspecialchars($_COOKIE['id_img'], ENT_QUOTES) ?> </div>
+                        <div class="card-body">
+                            <div class="row justify-content-center">
+                                <div class="col">
+                                    <form action="/addcomment" method="post">
+                                        <div class="form-group">
+                                            <textarea class="form-control" rows="3" name="post"></textarea>
+                                            <input type="hidden" name="id_img" value="<?php echo $_COOKIE['id_img']; ?>">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-success mt-2">Добавить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+    </div>
+    <!-- конец добавление комментария -->
+</div>
+<!-- КОНЕЦ Вывод комментариев -->

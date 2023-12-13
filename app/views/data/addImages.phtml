@@ -1,0 +1,24 @@
+<div class="content-wrapper p-1 mb-1">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Добавить изображение</div>
+            <div class="card-body">
+                <div class="row justify-content-center">
+                <div class="col-8">
+                        <form action="addimages" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Изображение</label>
+                                <input class="form-control" type="file" name="img">
+                            </div>
+                            <small class="form-text text-muted">
+                                <p class="mt-1"> Максимальный размер файла: <?php echo MAX_FILE_SIZE / 1000000; ?>Мб.</p>
+                                <p> Допустимые форматы: <?php echo implode(', ', ALLOWED_TYPES) ?>.</p>
+                            </small>
+                            <button type="submit" class="btn btn-sm btn-success">Добавить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

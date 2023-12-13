@@ -1,0 +1,116 @@
+<p>
+<h1>
+  <?php
+
+  use App\config\Helpers;
+  use function App\d;
+  use function App\dd;
+
+  echo $title;
+  ?>
+</h1>
+</p>
+
+<?php isset($this->route['page']) ? setcookie('back', $this->route['page'], 0, '/') : setcookie('back', '1', 0, '/');?>
+
+<!-- пример вывода данных -->
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 mx-auto">
+      <h4>Галерея</h4>
+
+      <?php if (Helpers::existsSession('account')) : ?>
+        <p>Привет, <b class="text-danger" ><?php echo $_SESSION['account']['login'] ?></b></p>
+      <?php endif; ?>
+
+      <div class="row  justify-content-center mb-2">
+        <?php if (empty($list) and !isset($_SESSION['account'])) : ?>
+          <p>Зарегистрируйтесь и добавьте изображение в галерею</p>
+        <?php else : ?>
+          <?php foreach ($list as $val) : ?>
+
+            <?php setcookie('id_img', $val['id'], 0, '/'); ?>
+
+            <div class="col-md-6">
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-200 position-relative">
+
+                <div class="col-auto d-none d-sm-block">
+                  <img src="/public/uploads/<?php echo $val['id'] . '.jpg'; ?>" class="rounded img-thumbnail d-block" alt="Изображение отсутствует">
+                  <?php echo 'Картинка № ' . $val['id']; ?>
+                </div>
+
+                <div class="row mb-2 mx-auto">
+                  <p class="text-muted small">Загрузил: <?php echo htmlspecialchars($val['owner'], ENT_QUOTES); ?></p>
+                  <div class="col mx-auto">
+                    <a href="<?php echo 'commentslist/' . $val['id']; ?>" class="btn btn-sm btn-primary">Посмотреть комментарии</a>
+                  </div>
+                  <?php if (isset($_SESSION['account']['login']) and $_SESSION['account']['login'] == $val['owner']) : ?>
+                  <div class="col mx-auto">
+                    <a href="<?php echo 'deleteimage/' . $val['id']; ?>" class="btn btn-sm btn-danger">Удалить изображение</a>
+                  </div>
+                  <?php endif; ?>
+                </div>
+
+              </div>
+            </div>
+      </div>
+
+    <?php endforeach; ?>
+    <div class="container">
+      <div class="row">
+        <div class="clearfix">
+          <p><?php echo $pagination; ?></p>
+        </div>
+      </div>
+    </div>
+
+  <?php endif; ?>
+
+
+
+    </div>
+  </div>
+
+
+
+  <!-- форма добавления изображений и коментариев-->
+  <div class="container">
+    <div class="row">
+      <div class="col-8 mx-auto">
+        <?php if (Helpers::existsSession('account')) : ?>
+
+          <!-- добавление комментария -->
+          <?php if (!empty($list)) : ?>
+          <div class="container rounded bg-success">
+          <div class="content-wrapper py-1 mb-1">
+            <div class="container">
+              <div class="card">
+                <div class="card-header">Добавить комментарий</div>
+                <div class="card-body">
+                  <div class="row justify-content-center">
+                    <div class="col-8">
+                      <form action="addcomment" method="post">
+                        <div class="form-group">
+                          <textarea class="form-control" rows="2" name="post"></textarea>
+                          <input type="hidden" name="id_img" value="<?php echo $val['id']; ?>">
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-success mt-2">Добавить</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          <?php endif; ?>
+          <!-- конец добавление комментария -->
+
+          <div class="container rounded bg-success">
+            <?php include VIEW . 'data' . DIRECTORY_SEPARATOR . 'addImages.phtml' ?>
+          </div>
+
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
